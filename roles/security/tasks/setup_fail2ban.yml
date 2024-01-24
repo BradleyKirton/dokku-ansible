@@ -1,0 +1,15 @@
+---
+- name: Install fail2ban
+  ansible.builtin.apt:
+    autoclean: yes
+    autoremove: yes
+    update_cache: yes
+    install_recommends: yes
+    name:
+      - fail2ban
+
+- name: Set up fail2ban
+  ansible.builtin.command:
+    cmd: cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+    creates: /etc/fail2ban/jail.local
+  notify: "restart fail2ban"

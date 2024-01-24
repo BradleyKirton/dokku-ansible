@@ -1,0 +1,5 @@
+---
+- name: Add authorized SSH key to dokku
+  ansible.builtin.shell: "dokku ssh-keys:add admin /home/{{ non_root_user }}/.ssh/authorized_keys"
+  become: true
+  become_method: sudo

@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily schedule of the journal-vacuum service
+
+[Timer]
+OnCalendar=daily
+AccuracySec=12h
+Unit=journal-vacuum.service
+
+[Install]
+WantedBy=timers.target

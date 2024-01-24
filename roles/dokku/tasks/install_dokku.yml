@@ -1,0 +1,11 @@
+---
+- name: Download the dokku installer
+  get_url:
+    url: "https://dokku.com/install/{{ dokku_version_tag }}/bootstrap.sh"
+    dest: /tmp/dokku_installer.sh
+    mode: "0755"
+
+- name: Run the dokku installer
+  shell: "DOKKU_TAG={{ dokku_version_tag }} bash /tmp/dokku_installer.sh"
+  become: true
+  become_method: sudo

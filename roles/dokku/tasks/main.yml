@@ -1,0 +1,8 @@
+---
+- name: Install dokku
+  include_tasks: install_dokku.yml
+  when: ansible_ssh_user == non_root_user
+
+- name: Setup dokku
+  include_tasks: setup_dokku.yml
+  when: ansible_ssh_user == non_root_user

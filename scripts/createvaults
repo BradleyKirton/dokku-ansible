@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SOURCE_DIR="$(realpath $(dirname $0))"
+PROJECT_DIR="$(dirname $SOURCE_DIR)"
+VENV_DIR="$PROJECT_DIR/.venv"
+
+set -e
+
+$VENV_DIR/bin/ansible-vault create group_vars/all/vault.yml
+$VENV_DIR/bin/ansible-vault create inventories/production/group_vars/webservers/vault.yml
+$VENV_DIR/bin/ansible-vault create inventories/staging/group_vars/webservers/vault.yml

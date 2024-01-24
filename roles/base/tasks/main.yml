@@ -1,0 +1,8 @@
+---
+- name: Setup server
+  include_tasks: setup_server.yml
+  when: ansible_ssh_user == "root"
+
+- name: Setup users
+  include_tasks: setup_users.yml
+  when: ansible_ssh_user == "root"

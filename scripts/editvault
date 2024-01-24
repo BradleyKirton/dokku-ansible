@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+import argparse
+import subprocess
+import pathlib
+import os
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        "Edit a vault.", description="The name of the vault."
+    )
+    parser.add_argument(
+        "-v",
+        "--vault",
+        choices=(
+            "all",
+            "production",
+            "staging",
+        ),
+        required=True,
+        dest="vault_name",
+    )
+    args = parser.parse_args()
+
+    project_path = pathlib.Path(__file__).parent.parent
+    ansible_vault_path = project_path / ".venv/bin/ansible-vault"
+
+    if args.vault_name == "production":
+        vault_path = (
+            project_path / "inventories/production/group_vars/webservers/vault.yml"
+        )
+    elif args.vault_name == "staging":
+        vault_path = (
+            project_path / "inventories/staging/group_vars/webservers/vault.yml"
+        )
+    else:
+        vault_path = project_path / "group_vars/all/vault.yml"
+
+    command = [
+        ansible_vault_path,
+        "edit",
+        vault_path,
+    ]
+    subprocess.run(command, env=os.environ)

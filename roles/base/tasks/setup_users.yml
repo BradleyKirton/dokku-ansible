@@ -1,0 +1,87 @@
+---
+- name: Install apt dependencies
+  ansible.builtin.apt:
+    autoclean: yes
+    autoremove: yes
+    update_cache: yes
+    install_recommends: yes
+    name:
+      - sudo
+      - zsh
+
+- name: Create the users
+  ansible.builtin.user:
+    name: "{{ non_root_user }}"
+    shell: "{{ non_root_user_shell }}"
+    home: "/home/{{ non_root_user }}"
+    create_home: yes
+    state: "present"
+
+- name: Setup ansible tmp
+  ansible.builtin.file:
+    path: "/home/{{ non_root_user }}/.ansible/tmp"
+    state: directory
+    owner: "{{ non_root_user }}"
+    group: "{{ non_root_user }}"
+
+- name: Create user directories
+  ansible.builtin.file:
+    path: "/home/{{ non_root_user }}/.ssh"
+    state: "directory"
+    owner: "{{ non_root_user }}"
+    group: "{{ non_root_user }}"
+    mode: "700"
+    recurse: yes
+
+- name: Copy ssh authorized keys from the root user
+  ansible.builtin.copy:
+    src: /root/.ssh/authorized_keys
+    dest: "/home/{{ non_root_user }}/.ssh/authorized_keys"
+    owner: "{{ non_root_user }}"
+    group: "{{ non_root_user }}"
+    mode: "0600"
+    remote_src: yes
+  
+- name: Create sudoers.d directory
+  file:
+    path: "/etc/sudoers.d"
+    state: directory
+
+- name: Setup sudoers for the non root user
+  template:
+    src: "sudoers"
+    dest: "/etc/sudoers.d/sudoers"
+
+- name: Remove oh-my-zsh if necessary
+  ansible.builtin.file:
+    path: "/home/{{ non_root_user }}/.oh-my-zsh"
+    state: "absent"
+
+- name: Fetch the oh-my-zsh installer
+  ansible.builtin.uri:
+    url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    return_content: yes
+  register: ohmyzsh_installer
+
+- name: Install oh-my-zsh
+  ansible.builtin.shell:
+    cmd: "sh -s -- -y"
+    chdir: "/home/{{ non_root_user }}"
+    stdin: "{{ ohmyzsh_installer.content }}"
+  become: true
+  become_user: "{{ non_root_user }}"
+
+- name: Ensure oh-my-zsh plugins are configured
+  ansible.builtin.lineinfile:
+    path: "/home/{{ non_root_user }}/.zshrc"
+    regexp: "^plugins="
+    line: plugins=(systemd)
+  become: true
+  become_user: "{{ non_root_user }}"
+
+- name: Ensure zshrc is configured
+  ansible.builtin.lineinfile:
+    path: "/home/{{ non_root_user }}/.zshrc"
+    line: "source $ZSH/oh-my-zsh.sh"
+  become: true
+  become_user: "{{ non_root_user }}"

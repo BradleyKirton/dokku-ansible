@@ -1,0 +1,5 @@
+[env]
+mise.file = ".env"
+
+[tools]
+python = {version="3.11.6", virtualenv=".venv"}

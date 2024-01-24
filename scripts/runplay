@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+import argparse
+import subprocess
+import pathlib
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        "Edit a vault.", description="The name of the vault."
+    )
+    parser.add_argument(
+        "-i",
+        "--inventory",
+        choices=(
+            "production",
+            "staging",
+        ),
+        required=True,
+        dest="inventory",
+    )
+    parser.add_argument(
+        "-p",
+        "--playbook",
+        choices=(
+            "provision",
+            "dokku",
+        ),
+        required=True,
+        dest="playbook",
+    )
+    args = parser.parse_args()
+    project_path = pathlib.Path(__file__).parent.parent
+    ansible_playbook_path = project_path / ".venv/bin/ansible-playbook"
+
+    command = [
+        ansible_playbook_path,
+        "-i",
+        f"inventories/{args.inventory}",
+        f"{args.playbook}.yml",
+    ]
+    subprocess.run(command)

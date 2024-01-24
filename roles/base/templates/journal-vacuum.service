@@ -1,0 +1,9 @@
+[Unit]
+Description=Vacuum the journal logs
+After=network.target
+
+[Service]
+ExecStart=journalctl --vacuum-size=80M
+
+[Install]
+WantedBy=default.target

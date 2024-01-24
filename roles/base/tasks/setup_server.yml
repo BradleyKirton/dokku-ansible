@@ -1,0 +1,33 @@
+---
+- name: Upgrade the distribution
+  ansible.builtin.apt:
+    autoclean: yes
+    autoremove: yes
+    update_cache: yes
+    install_recommends: yes
+    upgrade: dist
+
+- name: Remove undesirable packages
+  package:
+    name: "{{ item }}"
+    state: "absent"
+  with_items:
+    - "postfix"
+    - "telnet"
+
+- name: Add journal vacumm service
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  become: true
+  with_items:
+    - src: "journal-vacuum.service"
+      dest: "/etc/systemd/system/journal-vacuum.service"
+    - src: "journal-vacuum.timer"
+      dest: "/etc/systemd/system/journal-vacuum.timer"
+
+- name: Journal vacumm service
+  systemd:
+    name: "journal-vacuum.timer"
+    state: "started"
+    enabled: yes

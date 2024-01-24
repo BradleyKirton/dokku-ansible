@@ -1,0 +1,20 @@
+---
+- name: Install ufw
+  ansible.builtin.apt:
+    autoclean: yes
+    autoremove: yes
+    update_cache: yes
+    install_recommends: yes
+    name:
+      - ufw
+
+- name: Setup ufw
+  ufw:
+    rule: "allow"
+    port: "{{ item }}"
+    state: "enabled"
+  with_items:
+    - ssh
+    - http
+    - https
+  notify: "restart ufw"

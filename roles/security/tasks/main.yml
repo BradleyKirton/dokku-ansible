@@ -1,0 +1,12 @@
+---
+- name: Setup ufw
+  ansible.builtin.import_tasks: setup_ufw.yml
+  when: ansible_ssh_user == "root"
+
+- name: Setup fail2ban
+  ansible.builtin.import_tasks: setup_fail2ban.yml
+  when: ansible_ssh_user == "root"
+
+- name: Setup SSH
+  ansible.builtin.import_tasks: setup_ssh.yml
+  when: ansible_ssh_user == "root"

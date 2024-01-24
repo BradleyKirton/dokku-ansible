@@ -1,0 +1,16 @@
+#!/bin/bash
+
+SOURCE_DIR="$(realpath $(dirname $0))"
+PROJECT_DIR="$(dirname $SOURCE_DIR)"
+VENV_DIR="$PROJECT_DIR/.venv"
+
+set -e
+
+python -m venv $PROJECT_DIR/.venv
+
+$VENV_DIR/bin/pip install -U pip==23.3.2 pip-tools==7.3.0
+$VENV_DIR/bin/pip-sync $PROJECT_DIR/requirements.txt
+
+if [[ ! -f $PROJECT_DIR/.env ]]; then
+	cp $PROJECT_DIR/.env.template $PROJECT_DIR/.env
+fi

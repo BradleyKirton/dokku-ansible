@@ -1,0 +1,5 @@
+---
+non_root_user: "dokku"
+non_root_user_shell: "/bin/zsh"
+dokku_version_tag: "v0.33.0"
+dokku_domain: ""

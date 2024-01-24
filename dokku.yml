@@ -1,0 +1,6 @@
+---
+- name: Install dokku on the remote
+  hosts: webservers
+  remote_user: "{{ non_root_user }}"
+  roles:
+    - dokku

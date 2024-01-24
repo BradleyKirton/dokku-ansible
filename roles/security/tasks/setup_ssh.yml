@@ -1,0 +1,36 @@
+---
+- name: Harden ssh config (Remove existing config)
+  lineinfile:
+    path: "/etc/ssh/sshd_config"
+    state: "absent"
+    regexp: "{{ item }}"
+  with_items:
+    - "PasswordAuthentication"
+    - "PermitEmptyPasswords"
+    - "PermitRootLogin"
+    - "Protocol"
+    - "ClientAliveInterval"
+    - "ClientAliveCountMax"
+    - "X11Forwarding"
+    - "AllowUsers"
+
+- name: Harden ssh config (Add config)
+  ansible.builtin.lineinfile:
+    path: "/etc/ssh/sshd_config"
+    line: "{{ item }}"
+    create: yes
+  with_items:
+    - "PasswordAuthentication no"
+    - "PermitEmptyPasswords no"
+    - "PermitRootLogin no"
+    - "Protocol 2"
+    - "ClientAliveInterval 300"
+    - "ClientAliveCountMax 3"
+    - "X11Forwarding no"
+    - "AllowUsers {{ non_root_user }}"
+  notify: "reload ssh"
+
+- name: Remove the root user's authorized keys
+  ansible.builtin.file:
+    path: "/root/.ssh/authorized_keys"
+    state: absent
