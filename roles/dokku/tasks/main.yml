@@ -6,3 +6,7 @@
 - name: Setup dokku
   include_tasks: setup_dokku.yml
   when: ansible_ssh_user == non_root_user
+
+- name: Setup letsencrypt
+  include_tasks: setup_letsencrypt.yml
+  when: ansible_ssh_user == non_root_user

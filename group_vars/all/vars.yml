@@ -2,4 +2,7 @@
 non_root_user: "dokku"
 non_root_user_shell: "/bin/zsh"
 dokku_version_tag: "v0.33.0"
+dokku_plugins: []
 dokku_domain: ""
+dokku_app_name: ""
+dokku_letsencrypt_email: ""

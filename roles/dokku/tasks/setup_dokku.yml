@@ -3,3 +3,17 @@
   ansible.builtin.shell: "dokku ssh-keys:add admin /home/{{ non_root_user }}/.ssh/authorized_keys"
   become: true
   become_method: sudo
+
+- name: Install dokku plugins
+  ansible.builtin.shell: "dokku apps:create {{ dokku_app_name }}"
+  become: true
+
+- name: Add the application domain to dokku
+  ansible.builtin.shell: "dokku domains:set {{ dokku_app_name }} {{ dokku_domain }}"
+  become: true
+  become_method: sudo
+
+- name: Install the user supplied dokku plugins
+  ansible.builtin.shell: "dokku plugin:install {{ item }}"
+  become: true
+  with_items: "{{ dokku_plugins }}"

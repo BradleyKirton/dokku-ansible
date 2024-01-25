@@ -1,0 +1,22 @@
+---
+- name: Get a list of installed plugins
+  ansible.builtin.shell: "sudo dokku plugin:list"
+  register: installed_plugins
+  become: true
+
+- name: Install the let's dokku-letsencrypt plugin
+  ansible.builtin.shell: "dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git 2> /dev/null"
+  become: true
+  when: "'letsencrypt' not in installed_plugins.stdout"
+
+- name: Set the dokku-letsencrypt plugin email
+  ansible.builtin.shell: "dokku letsencrypt:set --global email {{ dokku_letsencrypt_email }}"
+  become: true
+
+- name: Enable the dokku-letsencrypt plugin
+  ansible.builtin.shell: "dokku letsencrypt:enable {{ dokku_app_name }}"
+  become: true
+
+- name: Schedule the dokku-letsencrypt auto renewal cron-job
+  ansible.builtin.shell: "dokku letsencrypt:cron-job --add"
+  become: true
