@@ -5,7 +5,7 @@
   become: true
 
 - name: Install the let's dokku-letsencrypt plugin
-  ansible.builtin.shell: "dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git 2> /dev/null"
+  ansible.builtin.shell: "dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git"
   become: true
   when: "'letsencrypt' not in installed_plugins.stdout"
 
